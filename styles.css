@@ -1,7 +1,7 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
+    background-color: #013220; /* Dark green background to match Ethos Engineering branding */
+    color: #ffffff; /* White text color */
     margin: 0;
     padding: 0;
     display: flex;
@@ -13,7 +13,8 @@ body {
 }
 
 .container {
-    background: #fff;
+    background: #ffffff; /* White background for the container */
+    color: #000000; /* Black text color inside the container */
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 100%;
@@ -22,10 +23,20 @@ body {
     box-sizing: border-box;
 }
 
+.logo {
+    display: block;
+    margin: 0 auto 20px auto;
+    width: 100%;
+    max-width: 300px; /* Adjust as necessary */
+    height: auto;
+    max-height: 150px; /* Add this line to constrain the logo height */
+}
+
 h1 {
     text-align: center;
     margin-bottom: 20px;
     font-size: 1.5em;
+    color: #d4af37; /* Gold color to match Ethos Engineering logo */
 }
 
 form {
@@ -35,6 +46,7 @@ form {
 label {
     display: block;
     margin-bottom: 5px;
+    color: #d4af37; /* Gold color to match Ethos Engineering logo */
 }
 
 input[type="file"] {
@@ -47,8 +59,8 @@ button {
     width: 100%;
     padding: 10px;
     margin-top: 10px;
-    background: #007BFF;
-    color: white;
+    background: #d4af37; /* Gold background for buttons */
+    color: #013220; /* Dark green text color */
     border: none;
     cursor: pointer;
     text-align: center;
@@ -56,7 +68,7 @@ button {
 }
 
 button:hover {
-    background: #0056b3;
+    background: #b58e30; /* Darker gold on hover */
 }
 
 table {
@@ -74,8 +86,8 @@ th, td {
 }
 
 th {
-    background: #007BFF;
-    color: white;
+    background: #013220; /* Dark green background for table headers */
+    color: #d4af37; /* Gold text color */
 }
 
 @media (max-width: 600px) {

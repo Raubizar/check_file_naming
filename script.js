@@ -27,15 +27,6 @@ async function handleFileUpload(event) {
 function displayResults(results) {
     const tbody = document.getElementById('results-table').querySelector('tbody');
     tbody.innerHTML = '';
-    
-    // Add table headers
-    const thead = document.getElementById('results-table').querySelector('thead');
-    thead.innerHTML = '';
-    const headerRow = thead.insertRow();
-    headerRow.insertCell(0).textContent = 'File Name';
-    headerRow.insertCell(1).textContent = 'Compliance Status';
-    headerRow.insertCell(2).textContent = 'Details';
-    
     results.forEach(result => {
         const row = tbody.insertRow();
         row.insertCell(0).textContent = result.name;
