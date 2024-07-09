@@ -6,21 +6,26 @@ body {
     padding: 0;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     height: 100vh;
+    box-sizing: border-box;
+    overflow-y: auto;
 }
 
 .container {
     background: #fff;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 80%;
+    width: 100%;
     max-width: 800px;
+    margin: 20px;
+    box-sizing: border-box;
 }
 
 h1 {
     text-align: center;
     margin-bottom: 20px;
+    font-size: 1.5em;
 }
 
 form {
@@ -47,6 +52,7 @@ button {
     border: none;
     cursor: pointer;
     text-align: center;
+    font-size: 1em;
 }
 
 button:hover {
@@ -57,12 +63,14 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    font-size: 0.9em;
 }
 
 th, td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
+    word-break: break-word;
 }
 
 th {
@@ -70,3 +78,16 @@ th {
     color: white;
 }
 
+@media (max-width: 600px) {
+    h1 {
+        font-size: 1.2em;
+    }
+
+    button {
+        font-size: 0.9em;
+    }
+
+    th, td {
+        padding: 6px;
+    }
+}

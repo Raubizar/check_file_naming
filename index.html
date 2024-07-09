@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Naming Convention Checker</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/styles.css">
+    <!-- Include the XLSX library for reading Excel files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+    <script type="module" src="/script.js"></script>
 </head>
 <body>
     <div class="container">
@@ -26,6 +29,7 @@
         </table>
         <button id="export-button">Export Results</button>
     </div>
-    <script src="script.js"></script>
+    
 </body>
 </html>
+

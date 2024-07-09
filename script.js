@@ -27,17 +27,99 @@ async function handleFileUpload(event) {
 function displayResults(results) {
     const tbody = document.getElementById('results-table').querySelector('tbody');
     tbody.innerHTML = '';
+    
+    // Add table headers
+    const thead = document.getElementById('results-table').querySelector('thead');
+    thead.innerHTML = '';
+    const headerRow = thead.insertRow();
+    headerRow.insertCell(0).textContent = 'File Name';
+    headerRow.insertCell(1).textContent = 'Compliance Status';
+    headerRow.insertCell(2).textContent = 'Details';
+    
     results.forEach(result => {
         const row = tbody.insertRow();
         row.insertCell(0).textContent = result.name;
-        row.insertCell(1).textContent = result.compliance;
-        row.insertCell(2).textContent = result.details;
+        const analysis = analyzeFileName(result.name);
+        row.insertCell(1).textContent = analysis.compliance;
+        row.insertCell(2).textContent = analysis.details;
     });
+}
+
+function analyzeFileName(fileName) {
+    if (!namingConvention) {
+        return { compliance: 'No naming convention uploaded', details: 'Please upload a naming convention file' };
+    }
+    
+    let result = 'Ok';
+    let details = 'Correct information';
+
+    // Remove file extension
+    const dotPosition = fileName.lastIndexOf('.');
+    if (dotPosition > 0) {
+        fileName = fileName.substring(0, dotPosition);
+    }
+
+    // Read parts and delimiter from the naming convention
+    const partsCount = parseInt(namingConvention[0][1], 10);
+    const delimiter = namingConvention[0][3];
+
+    // Split the file name into parts
+    const nameParts = fileName.split(delimiter);
+
+    // Check if delimiter is correct
+    if (nameParts.length !== partsCount) {
+        result = 'Wrong';
+        details = `Delimiter ok; Wrong number of parts`;
+        return { compliance: result, details: details };
+    }
+
+    // Verify each part against the naming convention
+    for (let j = 0; j < nameParts.length; j++) {
+        const allowedParts = namingConvention.slice(1, 200).map(row => row[j]);
+        let partAllowed = false;
+
+        if (!allowedParts[0]) {
+            result = 'Wrong';
+            details = `part ${j + 1} "${nameParts[j]}" not found in the naming standard`;
+            return { compliance: result, details: details };
+        }
+
+        // Specific checks for numeric parts or description
+        if (!isNaN(allowedParts[0])) {
+            if (nameParts[j].length === parseInt(allowedParts[0], 10)) {
+                partAllowed = true;
+            }
+        } else if (allowedParts[0] === "Description") {
+            if (nameParts[j].length >= 3) {
+                partAllowed = true;
+            }
+        } else {
+            for (const allowedPart of allowedParts) {
+                if (allowedPart === nameParts[j]) {
+                    partAllowed = true;
+                    break;
+                }
+            }
+        }
+
+        if (!partAllowed) {
+            result = 'Wrong';
+            details = `part ${j + 1} "${nameParts[j]}" not found in the naming standard`;
+            return { compliance: result, details: details };
+        }
+    }
+
+    return { compliance: result, details: details };
 }
 
 function exportResults() {
     const results = [];
     const rows = document.querySelectorAll('#results-table tbody tr');
+    results.push({
+        name: 'File Name',
+        compliance: 'Compliance Status',
+        details: 'Details'
+    });
     rows.forEach(row => {
         const cells = row.querySelectorAll('td');
         results.push({
