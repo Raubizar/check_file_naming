@@ -5,11 +5,11 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    height: 100vh;
+    flex-direction: column;
+    align-items: center; /* Center horizontally */
+    justify-content: center; /* Center vertically */
+    min-height: 100vh; /* Full height of the viewport */
     box-sizing: border-box;
-    overflow-y: auto;
 }
 
 .container {
@@ -19,8 +19,8 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 800px;
-    margin: 20px;
     box-sizing: border-box;
+    text-align: center; /* Center text inside the container */
 }
 
 .logo {
@@ -29,7 +29,7 @@ body {
     width: 100%;
     max-width: 300px; /* Adjust as necessary */
     height: auto;
-    max-height: 150px; /* Add this line to constrain the logo height */
+    max-height: 150px; /* Constrain the logo height */
 }
 
 h1 {
@@ -88,6 +88,15 @@ th, td {
 th {
     background: #013220; /* Dark green background for table headers */
     color: #d4af37; /* Gold text color */
+}
+
+footer {
+    background: #013220; /* Dark green background */
+    color: #d4af37; /* Gold text color */
+    text-align: center;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 @media (max-width: 600px) {
