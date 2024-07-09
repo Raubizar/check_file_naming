@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Naming Convention Checker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Naming Convention Checker</h1>
+        <form id="upload-form">
+            <label for="file-input">Upload Naming Convention Excel:</label>
+            <input type="file" id="file-input" accept=".xls,.xlsx,.xlsm">
+        </form>
+        <button id="folder-select-button">Select Folder</button>
+        <table id="results-table">
+            <thead>
+                <tr>
+                    <th>File Name</th>
+                    <th>Compliance Status</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <button id="export-button">Export Results</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
