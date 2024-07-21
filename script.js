@@ -17,16 +17,32 @@ let namingConvention = null;
 
 async function handleFileUpload(event) {
     const file = event.target.files[0];
-    const data = await file.arrayBuffer();
-    const workbook = XLSX.read(data, { type: 'array' });
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-    namingConvention = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+    if (!file) return;
+
+    console.log('Reading file:', file.name);
+    try {
+        const data = await file.arrayBuffer();
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        namingConvention = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+        console.log('Naming convention loaded:', namingConvention);
+    } catch (error) {
+        console.error('Error reading file:', error);
+    }
 }
 
 function displayResults(results) {
     const tbody = document.getElementById('results-table').querySelector('tbody');
     tbody.innerHTML = '';
+    
+    const thead = document.getElementById('results-table').querySelector('thead');
+    thead.innerHTML = '';
+    const headerRow = thead.insertRow();
+    headerRow.insertCell(0).textContent = 'File Name';
+    headerRow.insertCell(1).textContent = 'Compliance Status';
+    headerRow.insertCell(2).textContent = 'Details';
+    
     results.forEach(result => {
         const row = tbody.insertRow();
         row.insertCell(0).textContent = result.name;
