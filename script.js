@@ -146,3 +146,56 @@ function exportResults() {
     link.click();
     document.body.removeChild(link);
 }
+
+function downloadTemplate(templateName) {
+    let templateData = [];
+
+    switch (templateName) {
+        case 'Template1':
+            templateData = [
+                ["Part", "Count", "Description", "Delimiter"],
+                [1, 3, "Description", "_"],
+                ["ExamplePart1", "", "", ""]
+            ];
+            break;
+        case 'Template2':
+            templateData = [
+                ["Part", "Count", "Description", "Delimiter"],
+                [2, 4, "Description", "-"],
+                ["ExamplePart2", "", "", ""]
+            ];
+            break;
+        case 'Template3':
+            templateData = [
+                ["Part", "Count", "Description", "Delimiter"],
+                [3, 2, "Description", "."],
+                ["ExamplePart3", "", "", ""]
+            ];
+            break;
+        default:
+            console.error('Unknown template name:', templateName);
+            return;
+    }
+
+    const worksheet = XLSX.utils.aoa_to_sheet(templateData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'NamingConvention');
+    const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'binary' });
+
+    const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = templateName + ".xlsx";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function s2ab(s) {
+    const buf = new ArrayBuffer(s.length);
+    const view = new Uint8Array(buf);
+    for (let i = 0; i < s.length; i++) {
+        view[i] = s.charCodeAt(i) & 0xFF;
+    }
+    return buf;
+}

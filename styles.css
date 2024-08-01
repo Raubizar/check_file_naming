@@ -17,7 +17,7 @@ body {
     color: #000000; /* Black text color inside the container */
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 100%;
+    width: 90%;
     max-width: 800px;
     box-sizing: border-box;
     text-align: center; /* Center text inside the container */
@@ -39,6 +39,37 @@ h1 {
     color: #d4af37; /* Gold color to match Ethos Engineering logo */
 }
 
+.template-download {
+    background: #f7f7f7; /* Light grey background for the download section */
+    color: #000000; /* Black text color inside the download section */
+    padding: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+.template-download h2 {
+    color: #d4af37; /* Gold color to match Ethos Engineering logo */
+}
+
+.template-download ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.template-download li {
+    margin-bottom: 10px;
+}
+
+.template-download a {
+    color: #013220; /* Dark green text color */
+    text-decoration: none;
+}
+
+.template-download a:hover {
+    text-decoration: underline;
+}
+
 form {
     margin-bottom: 20px;
 }
@@ -57,14 +88,15 @@ input[type="file"] {
 button {
     display: block;
     width: 100%;
-    padding: 10px;
+    padding: 8px; /* Reduced padding for smaller buttons */
     margin-top: 10px;
     background: #d4af37; /* Gold background for buttons */
     color: #013220; /* Dark green text color */
     border: none;
     cursor: pointer;
     text-align: center;
-    font-size: 1em;
+    font-size: 0.9em; /* Reduced font size */
+    border-radius: 4px;
 }
 
 button:hover {
@@ -105,7 +137,7 @@ footer {
     }
 
     button {
-        font-size: 0.9em;
+        font-size: 0.8em;
     }
 
     th, td {
