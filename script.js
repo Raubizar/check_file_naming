@@ -58,14 +58,15 @@ function displayResults(results) {
     });
 }
 
-
 function analyzeFileName(fileName) {
     if (!namingConvention) {
         return { compliance: 'No naming convention uploaded', details: 'Please upload a naming convention file' };
     }
     
-    let result = 'Ok';
-    let details = 'Correct information';
+    let delimiterCompliance = 'Ok';
+    let partsCountCompliance = 'Ok';
+    let partsCompliance = 'Ok';
+    let details = '';
 
     // Remove file extension
     const dotPosition = fileName.lastIndexOf('.');
@@ -80,29 +81,33 @@ function analyzeFileName(fileName) {
     // Split the file name into parts using the specified delimiter
     const nameParts = fileName.split(delimiter);
 
-    // Determine if the delimiter is correct by checking the expected delimiter
-    const correctDelimiter = (fileName.match(new RegExp(`\\${delimiter}`, 'g')) || []).length === (partsCount - 1);
+    // Check if the delimiter is correct
+    const expectedDelimiters = partsCount - 1;
+    const actualDelimiters = (fileName.match(new RegExp(`\\${delimiter}`, 'g')) || []).length;
+    if (actualDelimiters === expectedDelimiters) {
+        details += 'Delimiter correct; ';
+    } else {
+        delimiterCompliance = 'Wrong';
+        details += 'Delimiter wrong; ';
+    }
 
     // Check if the number of parts is correct
-    if (nameParts.length !== partsCount) {
-        result = 'Wrong';
-        if (!correctDelimiter) {
-            details = `Delimiter wrong; Wrong number of parts`;
-        } else {
-            details = `Delimiter ok; Wrong number of parts`;
-        }
-        return { compliance: result, details: details };
+    if (nameParts.length === partsCount) {
+        details += 'Number of parts correct; ';
+    } else {
+        partsCountCompliance = 'Wrong';
+        details += `Number of parts wrong (${nameParts.length}); `;
     }
 
     // Verify each part against the naming convention
+    let nonCompliantParts = [];
     for (let j = 0; j < nameParts.length; j++) {
-        const allowedParts = namingConvention.slice(1, 200).map(row => row[j]);
+        const allowedParts = namingConvention.slice(1).map(row => row[j]);
         let partAllowed = false;
 
         if (!allowedParts[0]) {
-            result = 'Wrong';
-            details = `part ${j + 1} "${nameParts[j]}" not found in the naming standard`;
-            return { compliance: result, details: details };
+            nonCompliantParts.push(j + 1);
+            continue;
         }
 
         // Specific checks for numeric parts or description
@@ -124,16 +129,25 @@ function analyzeFileName(fileName) {
         }
 
         if (!partAllowed) {
-            result = 'Wrong';
-            details = `part ${j + 1} "${nameParts[j]}" not found in the naming standard`;
-            return { compliance: result, details: details };
+            nonCompliantParts.push(j + 1);
         }
     }
 
-    return { compliance: result, details: details };
+    if (nonCompliantParts.length > 0) {
+        partsCompliance = 'Wrong';
+        details += `Parts ${nonCompliantParts.join(', ')} not compliant with the naming convention`;
+    }
+
+    let compliance = 'Ok';
+    if (delimiterCompliance === 'Wrong' || partsCountCompliance === 'Wrong' || partsCompliance === 'Wrong') {
+        compliance = 'Wrong';
+    }
+
+    // Trim the trailing semicolon and space from details
+    details = details.trim().replace(/; $/, '');
+
+    return { compliance: compliance, details: details };
 }
-
-
 
 function exportResults() {
     const results = [];
