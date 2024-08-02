@@ -77,17 +77,19 @@ function analyzeFileName(fileName) {
     const partsCount = parseInt(namingConvention[0][1], 10);
     const delimiter = namingConvention[0][3];
 
-    // Split the file name into parts
+    // Split the file name into parts using the specified delimiter
     const nameParts = fileName.split(delimiter);
+
+    // Determine if the delimiter is correct by checking the expected delimiter
+    const correctDelimiter = (fileName.match(new RegExp(`\\${delimiter}`, 'g')) || []).length === (partsCount - 1);
 
     // Check if the number of parts is correct
     if (nameParts.length !== partsCount) {
         result = 'Wrong';
-        // If the number of parts is not correct, check if using the wrong delimiter
-        if (fileName.split('').filter(char => char === delimiter).length === partsCount - 1) {
-            details = `Delimiter ok; Wrong number of parts`;
+        if (!correctDelimiter) {
+            details = `Delimiter wrong; Wrong number of parts`;
         } else {
-            details = `Delimiter wrong; Number of parts ok`;
+            details = `Delimiter ok; Wrong number of parts`;
         }
         return { compliance: result, details: details };
     }
@@ -130,6 +132,7 @@ function analyzeFileName(fileName) {
 
     return { compliance: result, details: details };
 }
+
 
 
 function exportResults() {
