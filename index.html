@@ -16,21 +16,22 @@
         <img src="ETHOS_SoloTab-RGB-logo.jpg" alt="Ethos Engineering Logo" class="logo">
         <h1>Naming Convention Checker</h1>
 
-        <!-- Template Download Section -->
-        <div class="template-download">
-            <h2>Download Naming Convention Templates</h2>
-            <ul id="template-list">
-                <li><a href="/AMS1-File naming convention.xlsx" download>Template 1 (AMS1)</a></li>
-                <li><a href="/DE_REFD-File naming convention.xlsx" download>Template 2 (DE_REFD)</a></li>
-                <li><a href="/DUB4.3-File naming convention.xlsx" download>Template 3 (DUB4.3)</a></li>
-            </ul>
+        <div class="form-and-download">
+            <div class="upload-section">
+                <form id="upload-form">
+                    <label for="file-input">Upload Your Project Naming Convention:</label>
+                    <input type="file" id="file-input" accept=".xls,.xlsx,.xlsm">
+                </form>
+            </div>
+            <div class="template-download">
+                <label>Download Naming Convention Template</label>
+                <ul id="template-list">
+                    <li><a href="/Naming Convention Template.xlsx" download>Naming Convention Template.xlsx</a></li>
+                </ul>
+            </div>
         </div>
 
-        <form id="upload-form">
-            <label for="file-input">Upload Naming Convention Excel:</label>
-            <input type="file" id="file-input" accept=".xls,.xlsx,.xlsm">
-        </form>
-        <button id="folder-select-button">Select Folder</button>
+        <button id="folder-select-button">Select Folder with Files to Check Naming Convention</button>
         <table id="results-table">
             <thead>
                 <tr>

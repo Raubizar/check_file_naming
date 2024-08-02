@@ -35,14 +35,20 @@ async function handleFileUpload(event) {
 function displayResults(results) {
     const tbody = document.getElementById('results-table').querySelector('tbody');
     tbody.innerHTML = '';
-    
+
+    // Remove and recreate thead to ensure headers are correctly styled
     const thead = document.getElementById('results-table').querySelector('thead');
     thead.innerHTML = '';
     const headerRow = thead.insertRow();
     headerRow.insertCell(0).textContent = 'File Name';
     headerRow.insertCell(1).textContent = 'Compliance Status';
     headerRow.insertCell(2).textContent = 'Details';
-    
+
+    // Add the header class to each cell
+    headerRow.cells[0].classList.add('header-cell');
+    headerRow.cells[1].classList.add('header-cell');
+    headerRow.cells[2].classList.add('header-cell');
+
     results.forEach(result => {
         const row = tbody.insertRow();
         row.insertCell(0).textContent = result.name;
@@ -51,6 +57,7 @@ function displayResults(results) {
         row.insertCell(2).textContent = analysis.details;
     });
 }
+
 
 function analyzeFileName(fileName) {
     if (!namingConvention) {
@@ -73,10 +80,15 @@ function analyzeFileName(fileName) {
     // Split the file name into parts
     const nameParts = fileName.split(delimiter);
 
-    // Check if delimiter is correct
+    // Check if the number of parts is correct
     if (nameParts.length !== partsCount) {
         result = 'Wrong';
-        details = `Delimiter ok; Wrong number of parts`;
+        // If the number of parts is not correct, check if using the wrong delimiter
+        if (fileName.split('').filter(char => char === delimiter).length === partsCount - 1) {
+            details = `Delimiter ok; Wrong number of parts`;
+        } else {
+            details = `Delimiter wrong; Number of parts ok`;
+        }
         return { compliance: result, details: details };
     }
 
@@ -118,6 +130,7 @@ function analyzeFileName(fileName) {
 
     return { compliance: result, details: details };
 }
+
 
 function exportResults() {
     const results = [];
