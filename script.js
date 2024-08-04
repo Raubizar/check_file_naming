@@ -106,7 +106,7 @@ function analyzeFileName(fileName) {
         let partAllowed = false;
 
         if (!allowedParts[0]) {
-            nonCompliantParts.push(j + 1);
+            nonCompliantParts.push(nameParts[j]);
             continue;
         }
 
@@ -129,13 +129,13 @@ function analyzeFileName(fileName) {
         }
 
         if (!partAllowed) {
-            nonCompliantParts.push(j + 1);
+            nonCompliantParts.push(nameParts[j]);
         }
     }
 
     if (nonCompliantParts.length > 0) {
         partsCompliance = 'Wrong';
-        details += `Parts ${nonCompliantParts.join(', ')} not compliant with the naming convention`;
+        details += `Parts not compliant: ${nonCompliantParts.join(', ')}`;
     }
 
     let compliance = 'Ok';
@@ -148,6 +148,7 @@ function analyzeFileName(fileName) {
 
     return { compliance: compliance, details: details };
 }
+
 
 function exportResults() {
     const results = [];
