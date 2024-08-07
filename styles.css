@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #013220; /* Dark green background to match Ethos Engineering branding */
+    background-color: #2e4a6b; /* Dark blue background to match the logo */
     color: #ffffff; /* White text color */
     margin: 0;
     padding: 0;
@@ -26,17 +26,16 @@ body {
 .logo {
     display: block;
     margin: 0 auto 20px auto;
-    width: 100%;
-    max-width: 300px; /* Adjust as necessary */
+    width: auto;
+    max-width: 160px; /* Adjust as necessary */
     height: auto;
-    max-height: 150px; /* Constrain the logo height */
 }
 
 h1 {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     font-size: 1.5em;
-    color: #d4af37; /* Gold color to match Ethos Engineering logo */
+    color: #2e4a6b; /* Dark blue color to match the logo */
 }
 
 .form-and-download {
@@ -48,7 +47,7 @@ h1 {
 }
 
 .upload-section, .template-download {
-    background: #f7f7f7; /* Light grey background for the sections */
+    background: #d6e3f3; /* Light blue background for the sections */
     color: #000000; /* Black text color inside the sections */
     padding: 15px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -60,7 +59,7 @@ h1 {
 .upload-section label, .template-download label {
     display: block;
     margin-bottom: 10px;
-    color: #d4af37; /* Gold color to match Ethos Engineering logo */
+    color: #2e4a6b; /* Dark blue color to match the logo */
 }
 
 .upload-section input[type="file"] {
@@ -81,7 +80,7 @@ h1 {
 }
 
 .template-download a {
-    color: #013220; /* Dark green text color */
+    color: #2e4a6b; /* Dark blue text color */
     text-decoration: none;
 }
 
@@ -94,8 +93,8 @@ button {
     width: 100%;
     padding: 8px; /* Reduced padding for smaller buttons */
     margin-top: 10px;
-    background: #d4af37; /* Gold background for buttons */
-    color: #013220; /* Dark green text color */
+    background: #2e4a6b; /* Dark blue background for buttons */
+    color: #ffffff; /* White text color */
     border: none;
     cursor: pointer;
     text-align: center;
@@ -104,7 +103,7 @@ button {
 }
 
 button:hover {
-    background: #b58e30; /* Darker gold on hover */
+    background: #1e3654; /* Darker blue on hover */
 }
 
 table {
@@ -122,17 +121,34 @@ th, td {
 }
 
 th {
-    background: #013220; /* Dark green background for table headers */
-    color: #d4af37; /* Gold text color */
+    background: #2e4a6b; /* Dark blue background for table headers */
+    color: #ffffff; /* White text color */
 }
 
 footer {
-    background: #013220; /* Dark green background */
-    color: #d4af37; /* Gold text color */
+    background: #2e4a6b; /* Dark blue background */
+    color: #d6e3f3; /* Light blue text color */
     text-align: center;
     padding: 10px;
     width: 100%;
     box-sizing: border-box;
+    font-size: 0.8em; /* Reduced footer text size */
+}
+
+footer a {
+    color: #d6e3f3; /* Light blue color for email link */
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+.beta-version {
+    font-size: 1.2em;
+    color: #ff0000; /* Red color to highlight beta version */
+    margin-top: 10px;
+    text-align: center;
 }
 
 @media (max-width: 600px) {
@@ -162,8 +178,8 @@ footer {
 
 /* Add this to your existing CSS */
 .header-cell {
-    background: #013220; /* Dark green background for table headers */
-    color: #d4af37; /* Gold text color */
+    background: #2e4a6b; /* Dark blue background for table headers */
+    color: #ffffff; /* White text color */
     font-weight: bold;
     padding: 8px;
     text-align: left;
