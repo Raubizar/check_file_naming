@@ -1,72 +1,56 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #2e4a6b; /* Dark blue background to match the logo */
+    background-color: #121212; /* Match the BIMM Smart background color */
     color: #ffffff; /* White text color */
     margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Center horizontally */
-    justify-content: center; /* Center vertically */
-    min-height: 100vh; /* Full height of the viewport */
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
     box-sizing: border-box;
 }
 
 .container {
-    background: #ffffff; /* White background for the container */
-    color: #000000; /* Black text color inside the container */
+    background: #1b1b1b; /* Dark background for the container */
+    color: #ffffff; /* White text color inside the container */
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Darker shadow */
     width: 90%;
     max-width: 800px;
     box-sizing: border-box;
-    text-align: center; /* Center text inside the container */
+    text-align: center;
+    border-radius: 10px; /* Rounded corners for consistency */
 }
 
 .logo {
     display: block;
     margin: 0 auto 20px auto;
     width: auto;
-    max-width: 160px; /* Adjust as necessary */
+    max-width: 160px;
     height: auto;
 }
 
 h1 {
     text-align: center;
-    margin-bottom: 10px;
-    font-size: 1.5em;
-    color: #2e4a6b; /* Dark blue color to match the logo */
-}
-
-.form-and-download {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    width: 100%;
     margin-bottom: 20px;
+    font-size: 2rem; /* Increased font size for consistency */
+    color: #ffffff; /* White color to match BIMM Smart */
 }
 
-.upload-section, .template-download {
-    background: #d6e3f3; /* Light blue background for the sections */
-    color: #000000; /* Black text color inside the sections */
-    padding: 15px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    flex: 0 0 45%;
-    box-sizing: border-box;
+.step {
+    margin-bottom: 30px; /* Add space between steps */
+    padding: 20px;
+    background-color: #282828; /* Match the section background with BIMM Smart */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Shadow for distinction */
 }
 
-.upload-section label, .template-download label {
-    display: block;
-    margin-bottom: 10px;
-    color: #2e4a6b; /* Dark blue color to match the logo */
-}
-
-.upload-section input[type="file"] {
-    display: block;
-    margin-bottom: 10px;
-    padding: 8px; /* Increased padding for bigger button */
-    font-size: 0.9em; /* Adjusted font size */
+.step h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #007BFF; /* Match heading color */
 }
 
 .template-download ul {
@@ -80,63 +64,84 @@ h1 {
 }
 
 .template-download a {
-    color: #2e4a6b; /* Dark blue text color */
+    color: #007BFF; /* Match the link color */
     text-decoration: none;
+    font-size: 1.2rem;
 }
 
 .template-download a:hover {
     text-decoration: underline;
 }
 
+.upload-section label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+    color: #ffffff;
+}
+
+.upload-section input[type="file"] {
+    display: block;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 1rem; /* Consistent font size */
+    border-radius: 5px;
+    border: none;
+    background: #1b1b1b;
+    color: #ffffff;
+}
+
 button {
     display: block;
     width: 100%;
-    padding: 8px; /* Reduced padding for smaller buttons */
+    padding: 15px; /* Consistent padding with other buttons */
     margin-top: 10px;
-    background: #2e4a6b; /* Dark blue background for buttons */
-    color: #ffffff; /* White text color */
+    background: #007BFF; /* Match button color */
+    color: #ffffff;
     border: none;
     cursor: pointer;
     text-align: center;
-    font-size: 0.9em; /* Reduced font size */
-    border-radius: 4px;
+    font-size: 1.2rem;
+    border-radius: 5px;
 }
 
 button:hover {
-    background: #1e3654; /* Darker blue on hover */
+    background: #0056b3; /* Darker blue on hover */
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    font-size: 0.9em;
+    font-size: 1rem;
+    color: #ffffff;
 }
 
 th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
+    border: 1px solid #444444; /* Darker borders */
+    padding: 10px;
     text-align: left;
     word-break: break-word;
 }
 
 th {
-    background: #2e4a6b; /* Dark blue background for table headers */
-    color: #ffffff; /* White text color */
+    background: #007BFF; /* Match table header color */
+    color: #ffffff;
 }
 
 footer {
-    background: #2e4a6b; /* Dark blue background */
-    color: #d6e3f3; /* Light blue text color */
+    background: #1b1b1b;
+    color: #ffffff;
     text-align: center;
-    padding: 10px;
+    padding: 20px;
     width: 100%;
     box-sizing: border-box;
-    font-size: 0.8em; /* Reduced footer text size */
+    font-size: 1rem; /* Consistent footer text size */
+    border-radius: 10px; /* Rounded corners to match container */
 }
 
 footer a {
-    color: #d6e3f3; /* Light blue color for email link */
+    color: #007BFF; /* Match link color in footer */
     text-decoration: none;
 }
 
@@ -145,42 +150,34 @@ footer a:hover {
 }
 
 .beta-version {
-    font-size: 1.2em;
-    color: #ff0000; /* Red color to highlight beta version */
+    font-size: 1.2rem;
+    color: #ff0000;
     margin-top: 10px;
     text-align: center;
 }
 
 @media (max-width: 600px) {
     h1 {
-        font-size: 1.2em;
+        font-size: 1.8rem; /* Adjusted for smaller screens */
     }
 
     button {
-        font-size: 0.8em;
+        font-size: 1rem;
     }
 
     th, td {
-        padding: 6px;
+        padding: 8px;
     }
-
-    .form-and-download {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .upload-section, .template-download {
-        width: 100%;
-        flex: none;
+    
+    .step {
         margin-bottom: 20px;
     }
 }
 
-/* Add this to your existing CSS */
 .header-cell {
-    background: #2e4a6b; /* Dark blue background for table headers */
-    color: #ffffff; /* White text color */
+    background: #007BFF;
+    color: #ffffff;
     font-weight: bold;
-    padding: 8px;
+    padding: 10px;
     text-align: left;
 }

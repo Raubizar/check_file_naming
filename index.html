@@ -16,37 +16,49 @@
         <img src="/company-logo.png" alt="BIM Smart Logo" class="logo">
         <h1>Naming Convention Checker</h1>
 
-        <div class="form-and-download">
+        <div class="step" id="step-1">
+            <h2>1st - Download Naming Convention Template</h2>
             <div class="template-download">
-                <label>1st - Download Naming Convention Template</label>
                 <ul id="template-list">
                     <li><a href="/Naming Convention Template.xlsx" download>Naming Convention Template.xlsx</a></li>
                 </ul>
             </div>
-            <div class="upload-section">
-                <form id="upload-form">
-                    <label for="file-input">2nd - Upload Your Project Naming Convention:</label>
-                    <input type="file" id="file-input" accept=".xls,.xlsx,.xlsm">
-                </form>
-            </div>            
         </div>
 
-        <button id="folder-select-button">3rd - Select Folder with Files to Check Naming Convention</button>
+        <div class="step" id="step-2">
+            <h2>2nd - Upload Your Project Naming Convention</h2>
+            <div class="upload-section">
+                <form id="upload-form">
+                    <label for="file-input">Upload your naming convention file:</label>
+                    <input type="file" id="file-input" accept=".xls,.xlsx,.xlsm">
+                </form>
+            </div>
+        </div>
+
+        <div class="step" id="step-3">
+            <h2>3rd - Select Folder with Files to Check Naming Convention</h2>
+            <button id="folder-select-button">Select Folder</button>
+        </div>
+
+        <div class="step" id="step-4">
+            <h2>4th - Export Results</h2>
+            <button id="export-button">Export Results</button>
+        </div>
+
         <table id="results-table">
             <thead>
                 <tr>
-                    <th>File Name</th>
-                    <th>Compliance Status</th>
-                    <th>Details</th>
+                    <th class="header-cell">File Name</th>
+                    <th class="header-cell">Compliance Status</th>
+                    <th class="header-cell">Details</th>
                 </tr>
             </thead>
             <tbody></tbody>
         </table>
-        <button id="export-button">4th - Export Results</button>
     </div>
     <footer>
         <p>Web application developed by Rubens Lage and ChatGPT</p>
-        <p>Send feedback to: <a href="mailto:feedback@example.com">feedback@example.com</a></p>
+        <p>Send feedback to: <a href="mailto:contact@bimmsmart.com">contact@bimmsmart.com</a></p>
     </footer>
     <p class="beta-version">Beta Version</p>
 </body>
