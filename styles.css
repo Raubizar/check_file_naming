@@ -34,9 +34,24 @@ body {
 
 h1 {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     font-size: 2rem; /* Increased font size for consistency */
     color: #ffffff; /* White color to match BIMM Smart */
+}
+
+.app-description {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+.bimmsmart-link {
+    color: #007BFF;
+    text-decoration: none;
+    font-size: 1.2rem;
+}
+
+.bimmsmart-link:hover {
+    text-decoration: underline;
 }
 
 .step {
@@ -45,12 +60,28 @@ h1 {
     background-color: #282828; /* Match the section background with BIMM Smart */
     border-radius: 10px; /* Rounded corners */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Shadow for distinction */
+    display: flex;
+    align-items: center;
+}
+
+.step-icon {
+    flex-shrink: 0;
+    margin-right: 20px;
+}
+
+.step-icon img {
+    width: 60px; /* Size of the step icons */
+    height: 60px;
+}
+
+.step-content {
+    text-align: left;
+    flex-grow: 1;
 }
 
 .step h2 {
-    font-size: 1.8rem;
-    margin-bottom: 15px;
-    color: #007BFF; /* Match heading color */
+    font-size: 1.5rem;
+    color: #ffffff; /* White text color */
 }
 
 .template-download ul {
@@ -170,7 +201,17 @@ footer a:hover {
     }
     
     .step {
-        margin-bottom: 20px;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .step-icon {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+
+    .step-content {
+        text-align: center;
     }
 }
 

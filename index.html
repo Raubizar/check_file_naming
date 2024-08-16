@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Naming Convention Checker</title>
+    <title>File Name Checker</title>
     <link rel="stylesheet" href="styles.css">
     <!-- Include the XLSX library for reading Excel files with SRI -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" 
@@ -14,35 +14,47 @@
 <body>
     <div class="container">
         <img src="/company-logo.png" alt="BIM Smart Logo" class="logo">
-        <h1>Naming Convention Checker</h1>
+        <h1>File Name Checker</h1>
+        <p class="app-description">This web app helps you check if your project file names comply with your naming convention.</p>
+        <p><a href="https://bimmsmart.com" target="_blank" class="bimmsmart-link">Visit BIMMSmart.com</a></p>
 
         <div class="step" id="step-1">
-            <h2>1st - Download Naming Convention Template</h2>
-            <div class="template-download">
-                <ul id="template-list">
-                    <li><a href="/Naming Convention Template.xlsx" download>Naming Convention Template.xlsx</a></li>
-                </ul>
+            <div class="step-icon">
+                <img src="icon-1.png" alt="Step 1 Icon">
+            </div>
+            <div class="step-content">
+                <h2>Download Naming Convention Template</h2>
+                <div class="template-download">
+                    <ul id="template-list">
+                        <li><a href="/Naming Convention Template.xlsx" download>Naming Convention Template.xlsx</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
 
         <div class="step" id="step-2">
-            <h2>2nd - Upload Your Project Naming Convention</h2>
-            <div class="upload-section">
-                <form id="upload-form">
-                    <label for="file-input">Upload your naming convention file:</label>
-                    <input type="file" id="file-input" accept=".xls,.xlsx,.xlsm">
-                </form>
+            <div class="step-icon">
+                <img src="icon-2.png" alt="Step 2 Icon">
+            </div>
+            <div class="step-content">
+                <h2>Upload Your Project Naming Convention</h2>
+                <div class="upload-section">
+                    <form id="upload-form">
+                        <label for="file-input">Upload your naming convention file:</label>
+                        <input type="file" id="file-input" accept=".xls,.xlsx,.xlsm">
+                    </form>
+                </div>
             </div>
         </div>
 
         <div class="step" id="step-3">
-            <h2>3rd - Select Folder with Files to Check Naming Convention</h2>
-            <button id="folder-select-button">Select Folder</button>
-        </div>
-
-        <div class="step" id="step-4">
-            <h2>4th - Export Results</h2>
-            <button id="export-button">Export Results</button>
+            <div class="step-icon">
+                <img src="icon-3.png" alt="Step 3 Icon">
+            </div>
+            <div class="step-content">
+                <h2>Select Folder with Files to Check Naming Convention</h2>
+                <button id="folder-select-button">Select Folder</button>
+            </div>
         </div>
 
         <table id="results-table">
@@ -55,9 +67,18 @@
             </thead>
             <tbody></tbody>
         </table>
+
+        <div class="step" id="step-4">
+            <div class="step-icon">
+                <img src="icon-4.png" alt="Step 4 Icon">
+            </div>
+            <div class="step-content">
+                <h2>Export Results</h2>
+                <button id="export-button">Export Results</button>
+            </div>
+        </div>
     </div>
     <footer>
-        <p>Web application developed by Rubens Lage and ChatGPT</p>
         <p>Send feedback to: <a href="mailto:contact@bimmsmart.com">contact@bimmsmart.com</a></p>
     </footer>
     <p class="beta-version">Beta Version</p>
