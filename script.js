@@ -12,8 +12,10 @@ document.getElementById('folder-select-button').addEventListener('click', async 
 
 document.getElementById('file-input').addEventListener('change', handleFileUpload);
 document.getElementById('export-button').addEventListener('click', exportResults);
+document.getElementById('excel-select-button').addEventListener('click', handleExcelSelection);
 
 let namingConvention = null;
+let fileNamesFromExcel = [];
 
 async function handleFileUpload(event) {
     const file = event.target.files[0];
@@ -32,11 +34,71 @@ async function handleFileUpload(event) {
     }
 }
 
+async function handleExcelSelection() {
+    const [fileHandle] = await window.showOpenFilePicker({
+        types: [{
+            description: 'Excel Files',
+            accept: { 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'] }
+        }]
+    });
+    const file = await fileHandle.getFile();
+    const data = await file.arrayBuffer();
+    const workbook = XLSX.read(data, { type: 'array' });
+
+    const sheetSelect = document.getElementById('sheet-select');
+    sheetSelect.innerHTML = ''; // Clear any previous options
+    workbook.SheetNames.forEach((sheetName, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = sheetName;
+        sheetSelect.appendChild(option);
+    });
+
+    document.getElementById('excel-options').style.display = 'block';
+    
+    sheetSelect.addEventListener('change', function () {
+        populateColumnSelect(workbook.Sheets[workbook.SheetNames[this.value]]);
+    });
+    
+    // Load columns for the first sheet by default
+    populateColumnSelect(workbook.Sheets[workbook.SheetNames[0]]);
+}
+
+function populateColumnSelect(sheet) {
+    const columnSelect = document.getElementById('column-select');
+    columnSelect.innerHTML = ''; // Clear any previous options
+
+    const range = XLSX.utils.decode_range(sheet['!ref']);
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+        const cellAddress = XLSX.utils.encode_col(C) + '1'; // Get the first row cell for header
+        const cell = sheet[cellAddress] ? sheet[cellAddress].v : `Column ${C + 1}`;
+        const option = document.createElement('option');
+        option.value = C;
+        option.textContent = cell;
+        columnSelect.appendChild(option);
+    }
+
+    columnSelect.addEventListener('change', function () {
+        loadFileNamesFromExcel(sheet, this.value);
+    });
+
+    // Automatically select the first column as default
+    columnSelect.value = 0;
+    loadFileNamesFromExcel(sheet, 0);
+}
+
+function loadFileNamesFromExcel(sheet, columnIndex) {
+    fileNamesFromExcel = XLSX.utils.sheet_to_json(sheet, { header: 1 })
+        .map(row => row[columnIndex])
+        .filter(name => name);
+    console.log('File names from Excel loaded:', fileNamesFromExcel);
+    displayResults(fileNamesFromExcel.map(name => ({ name, compliance: 'Pending', details: 'Pending' })));
+}
+
 function displayResults(results) {
     const tbody = document.getElementById('results-table').querySelector('tbody');
     tbody.innerHTML = '';
 
-    // Remove and recreate thead to ensure headers are correctly styled
     const thead = document.getElementById('results-table').querySelector('thead');
     thead.innerHTML = '';
     const headerRow = thead.insertRow();
@@ -44,7 +106,6 @@ function displayResults(results) {
     headerRow.insertCell(1).textContent = 'Compliance Status';
     headerRow.insertCell(2).textContent = 'Details';
 
-    // Add the header class to each cell
     headerRow.cells[0].classList.add('header-cell');
     headerRow.cells[1].classList.add('header-cell');
     headerRow.cells[2].classList.add('header-cell');
@@ -62,26 +123,22 @@ function analyzeFileName(fileName) {
     if (!namingConvention) {
         return { compliance: 'No naming convention uploaded', details: 'Please upload a naming convention file' };
     }
-    
+
     let delimiterCompliance = 'Ok';
     let partsCountCompliance = 'Ok';
     let partsCompliance = 'Ok';
     let details = '';
 
-    // Remove file extension
     const dotPosition = fileName.lastIndexOf('.');
     if (dotPosition > 0) {
         fileName = fileName.substring(0, dotPosition);
     }
 
-    // Read parts and delimiter from the naming convention
     const partsCount = parseInt(namingConvention[0][1], 10);
     const delimiter = namingConvention[0][3];
 
-    // Split the file name into parts using the specified delimiter
     const nameParts = fileName.split(delimiter);
 
-    // Check if the delimiter is correct
     const expectedDelimiters = partsCount - 1;
     const actualDelimiters = (fileName.match(new RegExp(`\\${delimiter}`, 'g')) || []).length;
     if (actualDelimiters === expectedDelimiters) {
@@ -91,7 +148,6 @@ function analyzeFileName(fileName) {
         details += 'Delimiter wrong; ';
     }
 
-    // Check if the number of parts is correct
     if (nameParts.length === partsCount) {
         details += 'Number of parts correct; ';
     } else {
@@ -99,7 +155,6 @@ function analyzeFileName(fileName) {
         details += `Number of parts wrong (${nameParts.length}); `;
     }
 
-    // Verify each part against the naming convention
     let nonCompliantParts = [];
     for (let j = 0; j < nameParts.length; j++) {
         const allowedParts = namingConvention.slice(1).map(row => row[j]);
@@ -110,7 +165,6 @@ function analyzeFileName(fileName) {
             continue;
         }
 
-        // Specific checks for numeric parts or description
         if (!isNaN(allowedParts[0])) {
             if (nameParts[j].length === parseInt(allowedParts[0], 10)) {
                 partAllowed = true;
@@ -143,12 +197,10 @@ function analyzeFileName(fileName) {
         compliance = 'Wrong';
     }
 
-    // Trim the trailing semicolon and space from details
     details = details.trim().replace(/; $/, '');
 
     return { compliance: compliance, details: details };
 }
-
 
 function exportResults() {
     const results = [];
@@ -173,50 +225,6 @@ function exportResults() {
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
     link.setAttribute("download", "results.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-
-function downloadTemplate(templateName) {
-    let templateData = [];
-
-    switch (templateName) {
-        case 'Template1':
-            templateData = [
-                ["Part", "Count", "Description", "Delimiter"],
-                [1, 3, "Description", "_"],
-                ["ExamplePart1", "", "", ""]
-            ];
-            break;
-        case 'Template2':
-            templateData = [
-                ["Part", "Count", "Description", "Delimiter"],
-                [2, 4, "Description", "-"],
-                ["ExamplePart2", "", "", ""]
-            ];
-            break;
-        case 'Template3':
-            templateData = [
-                ["Part", "Count", "Description", "Delimiter"],
-                [3, 2, "Description", "."],
-                ["ExamplePart3", "", "", ""]
-            ];
-            break;
-        default:
-            console.error('Unknown template name:', templateName);
-            return;
-    }
-
-    const worksheet = XLSX.utils.aoa_to_sheet(templateData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'NamingConvention');
-    const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'binary' });
-
-    const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = templateName + ".xlsx";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

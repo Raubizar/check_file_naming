@@ -126,6 +126,50 @@ th {
     color: #d4af37; /* Gold text color */
 }
 
+.header-cell {
+    background: #013220; /* Dark green background for table headers */
+    color: #d4af37; /* Gold text color */
+    font-weight: bold;
+    padding: 8px;
+    text-align: left;
+}
+
+#excel-options {
+    display: none;
+    margin-top: 20px; /* Add more space above the Excel options */
+}
+
+.button-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.button-group button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    font-size: 1em;
+    background-color: #d4af37; /* Gold background */
+    color: #013220; /* Dark green text color */
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    flex: 1;
+    text-align: center;
+}
+
+.button-group .or-text {
+    margin: 0 10px;
+    font-size: 1.2em;
+    color: #013220; /* Dark green color to match the website's theme */
+    font-weight: bold;
+}
+
+.button-group button:hover {
+    background-color: #b58e30; /* Darker gold on hover */
+}
+
 footer {
     background: #013220; /* Dark green background */
     color: #d4af37; /* Gold text color */
@@ -133,6 +177,20 @@ footer {
     padding: 10px;
     width: 100%;
     box-sizing: border-box;
+    margin-top: 20px;
+}
+
+footer p {
+    margin: 5px 0;
+}
+
+footer a {
+    color: #d4af37;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
 }
 
 @media (max-width: 600px) {
@@ -158,13 +216,4 @@ footer {
         flex: none;
         margin-bottom: 20px;
     }
-}
-
-/* Add this to your existing CSS */
-.header-cell {
-    background: #013220; /* Dark green background for table headers */
-    color: #d4af37; /* Gold text color */
-    font-weight: bold;
-    padding: 8px;
-    text-align: left;
 }

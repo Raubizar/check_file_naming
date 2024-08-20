@@ -13,7 +13,9 @@
 </head>
 <body>
     <div class="container">
-        <img src="/company-logo.jpg" alt="Ethos Engineering Logo" class="logo">
+        <a href="https://www.ethoseng.ie/" target="_blank">
+            <img src="/company-logo.jpg" alt="Ethos Engineering Logo" class="logo">
+        </a>
         <h1>Naming Convention Checker</h1>
 
         <div class="form-and-download">
@@ -31,7 +33,22 @@
             </div>            
         </div>
 
-        <button id="folder-select-button">3rd - Select Folder with Files to Check Naming Convention</button>
+        <div class="selection-option">
+            <label>3rd - Choose an option to check Naming Convention:</label>
+            <div class="button-group">
+                <button id="folder-select-button">Select Folder with Files</button>
+                <span class="or-text">OR</span>
+                <button id="excel-select-button">Select Excel File with File Names</button>
+            </div>
+        </div>
+
+        <div id="excel-options" style="display: none;">
+            <label for="sheet-select">Select Sheet:</label>
+            <select id="sheet-select"></select>
+            <label for="column-select">Select Column for File Names:</label>
+            <select id="column-select"></select>
+        </div>
+
         <table id="results-table">
             <thead>
                 <tr>
@@ -45,7 +62,8 @@
         <button id="export-button">4th - Export Results</button>
     </div>
     <footer>
-        Web application developed by Rubens Lage and ChatGPT
+        <p>Beta test version. If you have any feedback, please email <a href="mailto:rubenslage@ethoseng.ie">rubenslage@ethoseng.ie</a></p>
+        <p>Web application developed by Rubens Lage and ChatGPT</p>
     </footer>
 </body>
 </html>
