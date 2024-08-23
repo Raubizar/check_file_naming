@@ -220,6 +220,11 @@ footer a:hover {
 
 .incorrect-result {
     color: red;
+    font-weight: bold;
 }
 
+.error {
+    color: red;
+    font-weight: bold;
+}
 

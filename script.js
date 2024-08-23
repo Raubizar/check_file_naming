@@ -117,23 +117,46 @@ function displayResults(results) {
     // Display incorrect results first
     incorrectResults.forEach(result => {
         const row = tbody.insertRow();
-        row.insertCell(0).textContent = result.name;
         const analysis = analyzeFileName(result.name);
-        row.insertCell(1).textContent = analysis.compliance;
-        row.insertCell(2).textContent = analysis.details;
-        if (analysis.compliance !== 'Ok') {
-            row.style.color = 'red'; // Make text red if the name is wrong
+        row.insertCell(0).textContent = result.name;
+        const complianceCell = row.insertCell(1);
+        complianceCell.textContent = analysis.compliance;
+
+        // Ensure only the non-compliant parts are red in the Details cell
+        const detailsCell = row.insertCell(2);
+        detailsCell.innerHTML = formatDetails(analysis.details, analysis.nonCompliantParts);
+
+        if (analysis.compliance === 'Wrong') {
+            complianceCell.style.color = 'red';
+            row.cells[0].style.color = 'red'; // Only highlight the file name in red
         }
     });
 
     // Then display correct results
     correctResults.forEach(result => {
         const row = tbody.insertRow();
-        row.insertCell(0).textContent = result.name;
         const analysis = analyzeFileName(result.name);
+        row.insertCell(0).textContent = result.name;
         row.insertCell(1).textContent = analysis.compliance;
-        row.insertCell(2).textContent = analysis.details;
+        row.insertCell(2).innerHTML = formatDetails(analysis.details, analysis.nonCompliantParts);
     });
+}
+
+function formatDetails(details, nonCompliantParts) {
+    let formattedDetails = details;
+
+    if (nonCompliantParts && nonCompliantParts.length > 0) {
+        // Highlight "Parts not compliant:" in red
+        formattedDetails = formattedDetails.replace('Parts not compliant:', '<span class="error">Parts not compliant:</span>');
+
+        // Highlight each non-compliant part in red
+        nonCompliantParts.forEach(part => {
+            const regex = new RegExp(`(${part})`, 'g');
+            formattedDetails = formattedDetails.replace(regex, '<span class="error">$1</span>');
+        });
+    }
+
+    return formattedDetails;
 }
 
 function analyzeFileName(fileName) {
@@ -153,7 +176,6 @@ function analyzeFileName(fileName) {
 
     const partsCount = parseInt(namingConvention[0][1], 10);
     const delimiter = namingConvention[0][3];
-
     const nameParts = fileName.split(delimiter);
 
     const expectedDelimiters = partsCount - 1;
@@ -162,14 +184,14 @@ function analyzeFileName(fileName) {
         details += 'Delimiter correct; ';
     } else {
         delimiterCompliance = 'Wrong';
-        details += 'Delimiter wrong; ';
+        details += '<span class="error">Delimiter wrong</span>; ';
     }
 
     if (nameParts.length === partsCount) {
         details += 'Number of parts correct; ';
     } else {
         partsCountCompliance = 'Wrong';
-        details += `Number of parts wrong (${nameParts.length}); `;
+        details += `<span class="error">Number of parts wrong (${nameParts.length})</span>; `;
     }
 
     let nonCompliantParts = [];
@@ -216,8 +238,10 @@ function analyzeFileName(fileName) {
 
     details = details.trim().replace(/; $/, '');
 
-    return { compliance: compliance, details: details };
+    return { compliance: compliance, details: details, nonCompliantParts: nonCompliantParts };
 }
+
+
 
 function exportResults() {
     const results = [];
