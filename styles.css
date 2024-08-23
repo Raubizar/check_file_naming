@@ -217,3 +217,9 @@ footer a:hover {
         margin-bottom: 20px;
     }
 }
+
+.incorrect-result {
+    color: red;
+}
+
+

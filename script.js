@@ -110,7 +110,24 @@ function displayResults(results) {
     headerRow.cells[1].classList.add('header-cell');
     headerRow.cells[2].classList.add('header-cell');
 
-    results.forEach(result => {
+    // Separate results into correct and incorrect groups
+    const correctResults = results.filter(result => analyzeFileName(result.name).compliance === 'Ok');
+    const incorrectResults = results.filter(result => analyzeFileName(result.name).compliance !== 'Ok');
+
+    // Display incorrect results first
+    incorrectResults.forEach(result => {
+        const row = tbody.insertRow();
+        row.insertCell(0).textContent = result.name;
+        const analysis = analyzeFileName(result.name);
+        row.insertCell(1).textContent = analysis.compliance;
+        row.insertCell(2).textContent = analysis.details;
+        if (analysis.compliance !== 'Ok') {
+            row.style.color = 'red'; // Make text red if the name is wrong
+        }
+    });
+
+    // Then display correct results
+    correctResults.forEach(result => {
         const row = tbody.insertRow();
         row.insertCell(0).textContent = result.name;
         const analysis = analyzeFileName(result.name);
