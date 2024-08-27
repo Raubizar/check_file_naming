@@ -1,44 +1,49 @@
+/* General Body Styling */
 body {
     font-family: Arial, sans-serif;
-    background-color: #013220; /* Dark green background to match Ethos Engineering branding */
+    background-color: #013220; /* Dark green background */
     color: #ffffff; /* White text color */
     margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Center horizontally */
-    justify-content: center; /* Center vertically */
-    min-height: 100vh; /* Full height of the viewport */
+    align-items: center; 
+    justify-content: center; 
+    min-height: 100vh; 
     box-sizing: border-box;
 }
 
+/* Container Styling */
 .container {
-    background: #ffffff; /* White background for the container */
-    color: #000000; /* Black text color inside the container */
+    background: #ffffff; 
+    color: #000000; 
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 90%;
     max-width: 800px;
     box-sizing: border-box;
-    text-align: center; /* Center text inside the container */
+    text-align: center;
 }
 
+/* Logo Styling */
 .logo {
     display: block;
     margin: 0 auto 20px auto;
     width: 100%;
-    max-width: 300px; /* Adjust as necessary */
+    max-width: 300px; 
     height: auto;
-    max-height: 150px; /* Constrain the logo height */
+    max-height: 150px; 
 }
 
+/* Header Styling */
 h1 {
     text-align: center;
     margin-bottom: 20px;
     font-size: 1.5em;
-    color: #d4af37; /* Gold color to match Ethos Engineering logo */
+    color: #d4af37; /* Gold color */
 }
 
+/* Form and Download Sections */
 .form-and-download {
     display: flex;
     justify-content: space-between;
@@ -48,8 +53,8 @@ h1 {
 }
 
 .upload-section, .template-download {
-    background: #f7f7f7; /* Light grey background for the sections */
-    color: #000000; /* Black text color inside the sections */
+    background: #f7f7f7; 
+    color: #000000; 
     padding: 15px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
@@ -60,14 +65,16 @@ h1 {
 .upload-section label, .template-download label {
     display: block;
     margin-bottom: 10px;
-    color: #d4af37; /* Gold color to match Ethos Engineering logo */
+    color: #d4af37; /* Gold color */
+    font-size: 1em;
+    font-weight: bold;
 }
 
 .upload-section input[type="file"] {
     display: block;
     margin-bottom: 10px;
-    padding: 8px; /* Increased padding for bigger button */
-    font-size: 0.9em; /* Adjusted font size */
+    padding: 8px;
+    font-size: 1em;
 }
 
 .template-download ul {
@@ -81,37 +88,40 @@ h1 {
 }
 
 .template-download a {
-    color: #013220; /* Dark green text color */
+    color: #013220; 
     text-decoration: none;
+    font-size: 1em;
 }
 
 .template-download a:hover {
     text-decoration: underline;
 }
 
+/* Button Styling */
 button {
     display: block;
     width: 100%;
-    padding: 8px; /* Reduced padding for smaller buttons */
+    padding: 10px;
     margin-top: 10px;
-    background: #d4af37; /* Gold background for buttons */
-    color: #013220; /* Dark green text color */
+    background: #d4af37; 
+    color: #013220; 
     border: none;
     cursor: pointer;
     text-align: center;
-    font-size: 0.9em; /* Reduced font size */
+    font-size: 1em;
     border-radius: 4px;
 }
 
 button:hover {
-    background: #b58e30; /* Darker gold on hover */
+    background: #b58e30; 
 }
 
+/* Table Styling */
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    font-size: 0.9em;
+    font-size: 1em;
 }
 
 th, td {
@@ -122,23 +132,33 @@ th, td {
 }
 
 th {
-    background: #013220; /* Dark green background for table headers */
-    color: #d4af37; /* Gold text color */
+    background: #013220; 
+    color: #d4af37; 
 }
 
 .header-cell {
-    background: #013220; /* Dark green background for table headers */
-    color: #d4af37; /* Gold text color */
+    background: #013220; 
+    color: #d4af37; 
     font-weight: bold;
     padding: 8px;
     text-align: left;
 }
 
+/* Excel Options Section */
 #excel-options {
     display: none;
-    margin-top: 20px; /* Add more space above the Excel options */
+    margin-top: 20px;
 }
 
+.selection-option label {
+    display: block;
+    margin-bottom: 10px;
+    color: #d4af37; 
+    font-size: 1em;
+    font-weight: bold;
+}
+
+/* Button Group Styling */
 .button-group {
     display: flex;
     align-items: center;
@@ -150,8 +170,8 @@ th {
     margin: 0 10px;
     padding: 10px 20px;
     font-size: 1em;
-    background-color: #d4af37; /* Gold background */
-    color: #013220; /* Dark green text color */
+    background-color: #d4af37;
+    color: #013220;
     border: none;
     cursor: pointer;
     border-radius: 4px;
@@ -162,17 +182,18 @@ th {
 .button-group .or-text {
     margin: 0 10px;
     font-size: 1.2em;
-    color: #013220; /* Dark green color to match the website's theme */
+    color: #013220; 
     font-weight: bold;
 }
 
 .button-group button:hover {
-    background-color: #b58e30; /* Darker gold on hover */
+    background-color: #b58e30;
 }
 
+/* Footer Styling */
 footer {
-    background: #013220; /* Dark green background */
-    color: #d4af37; /* Gold text color */
+    background: #013220; 
+    color: #d4af37; 
     text-align: center;
     padding: 10px;
     width: 100%;
@@ -193,13 +214,14 @@ footer a:hover {
     text-decoration: underline;
 }
 
+/* Media Query for Mobile Devices */
 @media (max-width: 600px) {
     h1 {
         font-size: 1.2em;
     }
 
     button {
-        font-size: 0.8em;
+        font-size: 0.9em;
     }
 
     th, td {
@@ -218,6 +240,7 @@ footer a:hover {
     }
 }
 
+/* Error and Incorrect Result Styling */
 .incorrect-result {
     color: red;
     font-weight: bold;
@@ -228,12 +251,13 @@ footer a:hover {
     font-weight: bold;
 }
 
+/* Summary Box Styling */
 #summary-box {
     display: flex;
     justify-content: space-between;
-    background-color: #f7f7f7; /* Light grey background */
+    background-color: #f7f7f7; 
     padding: 20px;
-    margin-bottom: 10px; /* Reduced margin to decrease space */
+    margin-bottom: 10px; 
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -245,23 +269,24 @@ footer a:hover {
 
 .summary-column p {
     margin: 5px 0;
-    font-size: 1.1em;
-    color: #013220; /* Dark green text color */
+    font-size: 1em;
+    color: #013220; 
 }
 
 .summary-column span {
     font-weight: bold;
-    color: #d4af37; /* Gold color to match Ethos Engineering branding */
+    color: #d4af37; 
 }
 
+/* Progress Bar Styling */
 #progress-bar-container {
     display: flex;
     justify-content: space-between;
-    margin-top: 10px; /* Add some space above the progress bar */
+    margin-top: 10px;
 }
 
 .progress-box {
-    width: 20px; /* Smaller, square boxes */
+    width: 20px; 
     height: 20px;
     background-color: white;
     border: 1px solid #ddd;
@@ -273,20 +298,13 @@ footer a:hover {
 }
 
 .progress-box.green {
-    background-color: #28a745; /* Green for compliance */
+    background-color: #28a745; 
 }
 
 .progress-box.yellow {
-    background-color: #ffc107; /* Yellow for less than 10% */
+    background-color: #ffc107; 
 }
 
 .progress-box.red {
-    background-color: #dc3545; /* Red for non-compliance */
-}
-
-.selection-option label {
-    display: block;
-    margin-bottom: 10px;
-    color: #d4af37; /* Gold color to match the other steps */
-    
+    background-color: #dc3545; 
 }
