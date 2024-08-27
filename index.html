@@ -8,7 +8,6 @@
     <!-- Include the XLSX library for reading Excel files with SRI -->
     <!-- use version 0.20.3 -->
     <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
-
     <script type="module" src="script.js"></script>
 </head>
 <body>
@@ -49,6 +48,31 @@
             <select id="column-select"></select>
         </div>
 
+        <div id="summary-box">
+            <div class="summary-column">
+                <p>Total Files Verified: <span id="total-files">0</span></p>
+                <p>Names Comply: <span id="names-comply">0</span></p>
+            </div>
+            <div class="summary-column">
+                <p>Processing Time: <span id="processing-time">0s</span></p>
+                <p>Compliance Percentage: <span id="compliance-percentage">0%</span></p>
+                <div id="progress-bar-container">
+                    <div class="progress-box" id="box-1"></div>
+                    <div class="progress-box" id="box-2"></div>
+                    <div class="progress-box" id="box-3"></div>
+                    <div class="progress-box" id="box-4"></div>
+                    <div class="progress-box" id="box-5"></div>
+                    <div class="progress-box" id="box-6"></div>
+                    <div class="progress-box" id="box-7"></div>
+                    <div class="progress-box" id="box-8"></div>
+                    <div class="progress-box" id="box-9"></div>
+                    <div class="progress-box" id="box-10"></div>
+                </div>
+            </div>
+        </div>
+        
+        
+        
         <table id="results-table">
             <thead>
                 <tr>

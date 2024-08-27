@@ -1,4 +1,7 @@
+let startTime; // Declare startTime globally so it can be accessed in multiple event handlers
+
 document.getElementById('folder-select-button').addEventListener('click', async () => {
+    startTime = performance.now(); // Start the timer when the folder selection begins
     const directoryHandle = await window.showDirectoryPicker();
     const results = [];
     for await (const entry of directoryHandle.values()) {
@@ -7,7 +10,9 @@ document.getElementById('folder-select-button').addEventListener('click', async 
             results.push({ name: file.name, compliance: 'Pending', details: 'Pending' });
         }
     }
-    displayResults(results);
+    const endTime = performance.now();
+    const processingTime = ((endTime - startTime) / 1000).toFixed(2);
+    displayResults(results, processingTime); // Pass the results and processing time to the display function
 });
 
 document.getElementById('file-input').addEventListener('change', handleFileUpload);
@@ -35,33 +40,38 @@ async function handleFileUpload(event) {
 }
 
 async function handleExcelSelection() {
-    const [fileHandle] = await window.showOpenFilePicker({
-        types: [{
-            description: 'Excel Files',
-            accept: { 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'] }
-        }]
-    });
-    const file = await fileHandle.getFile();
-    const data = await file.arrayBuffer();
-    const workbook = XLSX.read(data, { type: 'array' });
+    try {
+        const [fileHandle] = await window.showOpenFilePicker({
+            types: [{
+                description: 'Excel Files',
+                accept: { 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'] }
+            }]
+        });
+        const file = await fileHandle.getFile();
+        const data = await file.arrayBuffer();
+        const workbook = XLSX.read(data, { type: 'array' });
 
-    const sheetSelect = document.getElementById('sheet-select');
-    sheetSelect.innerHTML = ''; // Clear any previous options
-    workbook.SheetNames.forEach((sheetName, index) => {
-        const option = document.createElement('option');
-        option.value = index;
-        option.textContent = sheetName;
-        sheetSelect.appendChild(option);
-    });
+        const sheetSelect = document.getElementById('sheet-select');
+        sheetSelect.innerHTML = ''; // Clear any previous options
+        workbook.SheetNames.forEach((sheetName, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.textContent = sheetName;
+            sheetSelect.appendChild(option);
+        });
 
-    document.getElementById('excel-options').style.display = 'block';
-    
-    sheetSelect.addEventListener('change', function () {
-        populateColumnSelect(workbook.Sheets[workbook.SheetNames[this.value]]);
-    });
-    
-    // Load columns for the first sheet by default
-    populateColumnSelect(workbook.Sheets[workbook.SheetNames[0]]);
+        document.getElementById('excel-options').style.display = 'block';
+
+        sheetSelect.addEventListener('change', function () {
+            populateColumnSelect(workbook.Sheets[workbook.SheetNames[this.value]]);
+        });
+
+        // Load columns for the first sheet by default
+        populateColumnSelect(workbook.Sheets[workbook.SheetNames[0]]);
+    } catch (error) {
+        console.error('Error selecting or reading Excel file:', error);
+        alert('There was an issue selecting or reading the Excel file. Please try again.');
+    }
 }
 
 function populateColumnSelect(sheet) {
@@ -79,6 +89,8 @@ function populateColumnSelect(sheet) {
     }
 
     columnSelect.addEventListener('change', function () {
+        // Start the timer only when the user selects the column for file names
+        startTime = performance.now();
         loadFileNamesFromExcel(sheet, this.value);
     });
 
@@ -88,14 +100,26 @@ function populateColumnSelect(sheet) {
 }
 
 function loadFileNamesFromExcel(sheet, columnIndex) {
-    fileNamesFromExcel = XLSX.utils.sheet_to_json(sheet, { header: 1 })
-        .map(row => row[columnIndex])
-        .filter(name => name);
-    console.log('File names from Excel loaded:', fileNamesFromExcel);
-    displayResults(fileNamesFromExcel.map(name => ({ name, compliance: 'Pending', details: 'Pending' })));
+    try {
+        // Start from the second row (index 1) to skip the header
+        fileNamesFromExcel = XLSX.utils.sheet_to_json(sheet, { header: 1 })
+            .slice(1) // Skip the header row
+            .map(row => row[columnIndex])
+            .filter(name => typeof name === 'string' && name.trim() !== ''); // Filter out any empty or non-string cells
+
+        console.log('File names from Excel loaded:', fileNamesFromExcel);
+
+        const endTime = performance.now(); // End the timer after loading file names
+        const processingTime = ((endTime - startTime) / 1000).toFixed(2);
+        displayResults(fileNamesFromExcel.map(name => ({ name, compliance: 'Pending', details: 'Pending' })), processingTime);
+    } catch (error) {
+        console.error('Error loading file names from Excel:', error);
+        alert('There was an issue loading file names from the selected Excel column. Please try again.');
+    }
 }
 
-function displayResults(results) {
+
+function displayResults(results, processingTime) {
     const tbody = document.getElementById('results-table').querySelector('tbody');
     tbody.innerHTML = '';
 
@@ -110,11 +134,12 @@ function displayResults(results) {
     headerRow.cells[1].classList.add('header-cell');
     headerRow.cells[2].classList.add('header-cell');
 
-    // Separate results into correct and incorrect groups
+    const totalFiles = results.length;
+    let compliantCount = 0;
+
     const correctResults = results.filter(result => analyzeFileName(result.name).compliance === 'Ok');
     const incorrectResults = results.filter(result => analyzeFileName(result.name).compliance !== 'Ok');
 
-    // Display incorrect results first
     incorrectResults.forEach(result => {
         const row = tbody.insertRow();
         const analysis = analyzeFileName(result.name);
@@ -122,23 +147,55 @@ function displayResults(results) {
         const complianceCell = row.insertCell(1);
         complianceCell.textContent = analysis.compliance;
 
-        // Ensure only the non-compliant parts are red in the Details cell
         const detailsCell = row.insertCell(2);
         detailsCell.innerHTML = formatDetails(analysis.details, analysis.nonCompliantParts);
 
         if (analysis.compliance === 'Wrong') {
             complianceCell.style.color = 'red';
-            row.cells[0].style.color = 'red'; // Only highlight the file name in red
+            row.cells[0].style.color = 'red';
         }
     });
 
-    // Then display correct results
     correctResults.forEach(result => {
+        compliantCount++;
         const row = tbody.insertRow();
         const analysis = analyzeFileName(result.name);
         row.insertCell(0).textContent = result.name;
         row.insertCell(1).textContent = analysis.compliance;
         row.insertCell(2).innerHTML = formatDetails(analysis.details, analysis.nonCompliantParts);
+    });
+
+    // Calculate and update the summary
+    const compliancePercentage = ((compliantCount / totalFiles) * 100).toFixed(2);
+    document.getElementById('total-files').textContent = totalFiles;
+    document.getElementById('names-comply').textContent = compliantCount;
+    document.getElementById('compliance-percentage').textContent = `${compliancePercentage}%`;
+    document.getElementById('processing-time').textContent = `${processingTime}s`;
+
+    // Update the progress bar
+    updateProgressBar(compliancePercentage);
+}
+
+function updateProgressBar(compliancePercentage) {
+    const boxes = document.querySelectorAll('.progress-box');
+    const filledBoxes = Math.floor(compliancePercentage / 10);
+    const remainder = compliancePercentage % 10;
+
+    boxes.forEach((box, index) => {
+        if (index < filledBoxes) {
+            box.classList.remove('yellow', 'red');
+            box.classList.add('green');
+        } else if (index === filledBoxes) {
+            box.classList.remove('green', 'red');
+            if (remainder > 0 && remainder < 10) {
+                box.classList.add('yellow');
+            } else {
+                box.classList.add('red');
+            }
+        } else {
+            box.classList.remove('green', 'yellow');
+            box.classList.add('red');
+        }
     });
 }
 
@@ -146,10 +203,7 @@ function formatDetails(details, nonCompliantParts) {
     let formattedDetails = details;
 
     if (nonCompliantParts && nonCompliantParts.length > 0) {
-        // Highlight "Parts not compliant:" in red
         formattedDetails = formattedDetails.replace('Parts not compliant:', '<span class="error">Parts not compliant:</span>');
-
-        // Highlight each non-compliant part in red
         nonCompliantParts.forEach(part => {
             const regex = new RegExp(`(${part})`, 'g');
             formattedDetails = formattedDetails.replace(regex, '<span class="error">$1</span>');
@@ -241,8 +295,6 @@ function analyzeFileName(fileName) {
     return { compliance: compliance, details: details, nonCompliantParts: nonCompliantParts };
 }
 
-
-
 function exportResults() {
     const results = [];
     const rows = document.querySelectorAll('#results-table tbody tr');
@@ -269,13 +321,4 @@ function exportResults() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-}
-
-function s2ab(s) {
-    const buf = new ArrayBuffer(s.length);
-    const view = new Uint8Array(buf);
-    for (let i = 0; i < s.length; i++) {
-        view[i] = s.charCodeAt(i) & 0xFF;
-    }
-    return buf;
 }

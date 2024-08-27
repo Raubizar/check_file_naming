@@ -228,3 +228,65 @@ footer a:hover {
     font-weight: bold;
 }
 
+#summary-box {
+    display: flex;
+    justify-content: space-between;
+    background-color: #f7f7f7; /* Light grey background */
+    padding: 20px;
+    margin-bottom: 10px; /* Reduced margin to decrease space */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.summary-column {
+    width: 48%;
+    text-align: left;
+}
+
+.summary-column p {
+    margin: 5px 0;
+    font-size: 1.1em;
+    color: #013220; /* Dark green text color */
+}
+
+.summary-column span {
+    font-weight: bold;
+    color: #d4af37; /* Gold color to match Ethos Engineering branding */
+}
+
+#progress-bar-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px; /* Add some space above the progress bar */
+}
+
+.progress-box {
+    width: 20px; /* Smaller, square boxes */
+    height: 20px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.progress-box:not(:last-child) {
+    margin-right: 1px;
+}
+
+.progress-box.green {
+    background-color: #28a745; /* Green for compliance */
+}
+
+.progress-box.yellow {
+    background-color: #ffc107; /* Yellow for less than 10% */
+}
+
+.progress-box.red {
+    background-color: #dc3545; /* Red for non-compliance */
+}
+
+.selection-option label {
+    display: block;
+    margin-bottom: 10px;
+    color: #d4af37; /* Gold color to match the other steps */
+    
+}
