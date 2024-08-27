@@ -6,7 +6,6 @@
     <title>Naming Convention Checker</title>
     <link rel="stylesheet" href="styles.css">
     <!-- Include the XLSX library for reading Excel files with SRI -->
-    <!-- use version 0.20.3 -->
     <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
     <script type="module" src="script.js"></script>
 </head>
@@ -54,7 +53,6 @@
                 <p>Names Comply: <span id="names-comply">0</span></p>
             </div>
             <div class="summary-column">
-                <p>Processing Time: <span id="processing-time">0s</span></p>
                 <p>Compliance Percentage: <span id="compliance-percentage">0%</span></p>
                 <div id="progress-bar-container">
                     <div class="progress-box" id="box-1"></div>
@@ -70,9 +68,7 @@
                 </div>
             </div>
         </div>
-        
-        
-        
+
         <table id="results-table">
             <thead>
                 <tr>

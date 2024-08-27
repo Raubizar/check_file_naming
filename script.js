@@ -1,7 +1,4 @@
-let startTime; // Declare startTime globally so it can be accessed in multiple event handlers
-
 document.getElementById('folder-select-button').addEventListener('click', async () => {
-    startTime = performance.now(); // Start the timer when the folder selection begins
     const directoryHandle = await window.showDirectoryPicker();
     const results = [];
     for await (const entry of directoryHandle.values()) {
@@ -10,9 +7,7 @@ document.getElementById('folder-select-button').addEventListener('click', async 
             results.push({ name: file.name, compliance: 'Pending', details: 'Pending' });
         }
     }
-    const endTime = performance.now();
-    const processingTime = ((endTime - startTime) / 1000).toFixed(2);
-    displayResults(results, processingTime); // Pass the results and processing time to the display function
+    displayResults(results); // No longer passing processing time
 });
 
 document.getElementById('file-input').addEventListener('change', handleFileUpload);
@@ -89,8 +84,6 @@ function populateColumnSelect(sheet) {
     }
 
     columnSelect.addEventListener('change', function () {
-        // Start the timer only when the user selects the column for file names
-        startTime = performance.now();
         loadFileNamesFromExcel(sheet, this.value);
     });
 
@@ -101,7 +94,6 @@ function populateColumnSelect(sheet) {
 
 function loadFileNamesFromExcel(sheet, columnIndex) {
     try {
-        // Start from the second row (index 1) to skip the header
         fileNamesFromExcel = XLSX.utils.sheet_to_json(sheet, { header: 1 })
             .slice(1) // Skip the header row
             .map(row => row[columnIndex])
@@ -109,17 +101,14 @@ function loadFileNamesFromExcel(sheet, columnIndex) {
 
         console.log('File names from Excel loaded:', fileNamesFromExcel);
 
-        const endTime = performance.now(); // End the timer after loading file names
-        const processingTime = ((endTime - startTime) / 1000).toFixed(2);
-        displayResults(fileNamesFromExcel.map(name => ({ name, compliance: 'Pending', details: 'Pending' })), processingTime);
+        displayResults(fileNamesFromExcel.map(name => ({ name, compliance: 'Pending', details: 'Pending' })));
     } catch (error) {
         console.error('Error loading file names from Excel:', error);
         alert('There was an issue loading file names from the selected Excel column. Please try again.');
     }
 }
 
-
-function displayResults(results, processingTime) {
+function displayResults(results) {
     const tbody = document.getElementById('results-table').querySelector('tbody');
     tbody.innerHTML = '';
 
@@ -170,7 +159,6 @@ function displayResults(results, processingTime) {
     document.getElementById('total-files').textContent = totalFiles;
     document.getElementById('names-comply').textContent = compliantCount;
     document.getElementById('compliance-percentage').textContent = `${compliancePercentage}%`;
-    document.getElementById('processing-time').textContent = `${processingTime}s`;
 
     // Update the progress bar
     updateProgressBar(compliancePercentage);
