@@ -5,7 +5,7 @@ document.getElementById('folder-select-button').addEventListener('click', async 
     }
     const directoryHandle = await window.showDirectoryPicker();
     fileResultsFromFolder = []; // Clear previous results
-    await traverseDirectory(directoryHandle, fileResultsFromFolder);
+    await traverseDirectory(directoryHandle, fileResultsFromFolder, '', 0);
     displayResults(fileResultsFromFolder);
 });
 
@@ -19,7 +19,13 @@ let namingConvention = null;
 let fileNamesFromExcel = [];
 let fileResultsFromFolder = [];  // New variable to store results from folder selection
 
-async function traverseDirectory(directoryHandle, results, currentPath = '') {
+const MAX_DEPTH = 6; // Maximum depth allowed
+
+async function traverseDirectory(directoryHandle, results, currentPath = '', depth = 0) {
+    if (depth > MAX_DEPTH) {
+        return; // Stop recursion if depth exceeds the maximum
+    }
+
     for await (const entry of directoryHandle.values()) {
         const fullPath = currentPath ? `${currentPath}/${entry.name}` : entry.name;
         if (entry.kind === 'file') {
@@ -31,7 +37,7 @@ async function traverseDirectory(directoryHandle, results, currentPath = '') {
                 details: 'Pending'
             });
         } else if (entry.kind === 'directory') {
-            await traverseDirectory(entry, results, fullPath); // Recursive call to traverse sub-directories
+            await traverseDirectory(entry, results, fullPath, depth + 1); // Recursive call with increased depth
         }
     }
 }
@@ -59,8 +65,6 @@ async function handleFileUpload(event) {
         console.error('Error reading file:', error);
     }
 }
-
-document.getElementById('excel-select-button').addEventListener('click', handleExcelSelection);
 
 async function handleExcelSelection() {
     try {
