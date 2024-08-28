@@ -1,21 +1,40 @@
 document.getElementById('folder-select-button').addEventListener('click', async () => {
-    const directoryHandle = await window.showDirectoryPicker();
-    const results = [];
-    for await (const entry of directoryHandle.values()) {
-        if (entry.kind === 'file') {
-            const file = await entry.getFile();
-            results.push({ name: file.name, compliance: 'Pending', details: 'Pending' });
-        }
+    if (!namingConvention) {
+        alert("Please upload the Project Naming Convention first.");
+        return;
     }
-    displayResults(results); // No longer passing processing time
+    const directoryHandle = await window.showDirectoryPicker();
+    fileResultsFromFolder = []; // Clear previous results
+    await traverseDirectory(directoryHandle, fileResultsFromFolder);
+    displayResults(fileResultsFromFolder);
 });
 
 document.getElementById('file-input').addEventListener('change', handleFileUpload);
-document.getElementById('export-button').addEventListener('click', exportResults);
 document.getElementById('excel-select-button').addEventListener('click', handleExcelSelection);
+
+// Add the event listener for the export button here
+document.getElementById('export-button').addEventListener('click', exportResults);
 
 let namingConvention = null;
 let fileNamesFromExcel = [];
+let fileResultsFromFolder = [];  // New variable to store results from folder selection
+
+async function traverseDirectory(directoryHandle, results, currentPath = '') {
+    for await (const entry of directoryHandle.values()) {
+        const fullPath = currentPath ? `${currentPath}/${entry.name}` : entry.name;
+        if (entry.kind === 'file') {
+            const file = await entry.getFile();
+            results.push({
+                name: file.name,
+                path: currentPath, // Add the path to the results
+                compliance: 'Pending',
+                details: 'Pending'
+            });
+        } else if (entry.kind === 'directory') {
+            await traverseDirectory(entry, results, fullPath); // Recursive call to traverse sub-directories
+        }
+    }
+}
 
 async function handleFileUpload(event) {
     const file = event.target.files[0];
@@ -29,10 +48,19 @@ async function handleFileUpload(event) {
         const sheet = workbook.Sheets[sheetName];
         namingConvention = XLSX.utils.sheet_to_json(sheet, { header: 1 });
         console.log('Naming convention loaded:', namingConvention);
+
+        // Re-analyze and display the results after loading the new naming convention
+        if (fileNamesFromExcel.length > 0) {
+            displayResults(fileNamesFromExcel.map(name => ({ name, compliance: 'Pending', details: 'Pending' })));
+        } else if (fileResultsFromFolder.length > 0) {
+            displayResults(fileResultsFromFolder);
+        }
     } catch (error) {
         console.error('Error reading file:', error);
     }
 }
+
+document.getElementById('excel-select-button').addEventListener('click', handleExcelSelection);
 
 async function handleExcelSelection() {
     try {
@@ -115,44 +143,52 @@ function displayResults(results) {
     const thead = document.getElementById('results-table').querySelector('thead');
     thead.innerHTML = '';
     const headerRow = thead.insertRow();
-    headerRow.insertCell(0).textContent = 'File Name';
-    headerRow.insertCell(1).textContent = 'Compliance Status';
-    headerRow.insertCell(2).textContent = 'Details';
+    headerRow.insertCell(0).textContent = 'Folder Path';
+    headerRow.insertCell(1).textContent = 'File Name';
+    headerRow.insertCell(2).textContent = 'Compliance Status';
+    headerRow.insertCell(3).textContent = 'Details';
 
     headerRow.cells[0].classList.add('header-cell');
     headerRow.cells[1].classList.add('header-cell');
     headerRow.cells[2].classList.add('header-cell');
+    headerRow.cells[3].classList.add('header-cell');
 
-    const totalFiles = results.length;
+    const folderGroups = groupByFolder(results);
+
+    let totalFiles = 0;
     let compliantCount = 0;
 
-    const correctResults = results.filter(result => analyzeFileName(result.name).compliance === 'Ok');
-    const incorrectResults = results.filter(result => analyzeFileName(result.name).compliance !== 'Ok');
+    for (const [folder, files] of Object.entries(folderGroups)) {
+        const folderRow = tbody.insertRow();
+        folderRow.insertCell(0).textContent = folder;
+        folderRow.insertCell(1).textContent = '';
+        folderRow.insertCell(2).textContent = '';
+        folderRow.insertCell(3).textContent = '';
 
-    incorrectResults.forEach(result => {
-        const row = tbody.insertRow();
-        const analysis = analyzeFileName(result.name);
-        row.insertCell(0).textContent = result.name;
-        const complianceCell = row.insertCell(1);
-        complianceCell.textContent = analysis.compliance;
+        files.forEach(result => {
+            const row = tbody.insertRow();
+            row.insertCell(0).textContent = '';
+            row.insertCell(1).textContent = result.name;
 
-        const detailsCell = row.insertCell(2);
-        detailsCell.innerHTML = formatDetails(analysis.details, analysis.nonCompliantParts);
+            const analysis = analyzeFileName(result.name);
+            const complianceCell = row.insertCell(2);
+            complianceCell.textContent = analysis.compliance;
 
-        if (analysis.compliance === 'Wrong') {
-            complianceCell.style.color = 'red';
-            row.cells[0].style.color = 'red';
-        }
-    });
+            const detailsCell = row.insertCell(3);
+            detailsCell.innerHTML = formatDetails(analysis.details, analysis.nonCompliantParts);
 
-    correctResults.forEach(result => {
-        compliantCount++;
-        const row = tbody.insertRow();
-        const analysis = analyzeFileName(result.name);
-        row.insertCell(0).textContent = result.name;
-        row.insertCell(1).textContent = analysis.compliance;
-        row.insertCell(2).innerHTML = formatDetails(analysis.details, analysis.nonCompliantParts);
-    });
+            if (analysis.compliance === 'Wrong') {
+                complianceCell.style.color = 'red';
+                row.cells[1].style.color = 'red';
+            }
+
+            if (analysis.compliance === 'Ok') {
+                compliantCount++;
+            }
+
+            totalFiles++;
+        });
+    }
 
     // Calculate and update the summary
     const compliancePercentage = ((compliantCount / totalFiles) * 100).toFixed(2);
@@ -162,6 +198,18 @@ function displayResults(results) {
 
     // Update the progress bar
     updateProgressBar(compliancePercentage);
+}
+
+
+function groupByFolder(results) {
+    const folderGroups = {};
+    results.forEach(result => {
+        if (!folderGroups[result.path]) {
+            folderGroups[result.path] = [];
+        }
+        folderGroups[result.path].push(result);
+    });
+    return folderGroups;
 }
 
 function updateProgressBar(compliancePercentage) {
@@ -286,27 +334,41 @@ function analyzeFileName(fileName) {
 function exportResults() {
     const results = [];
     const rows = document.querySelectorAll('#results-table tbody tr');
-    results.push({
-        name: 'File Name',
-        compliance: 'Compliance Status',
-        details: 'Details'
-    });
+
+    // Add header row to the CSV data
+    results.push(['Folder Path', 'File Name', 'Compliance Status', 'Details']);
+
+    let currentFolderPath = '';
+
     rows.forEach(row => {
         const cells = row.querySelectorAll('td');
-        results.push({
-            name: cells[0].textContent,
-            compliance: cells[1].textContent,
-            details: cells[2].textContent
-        });
-    });
-    const csvContent = "data:text/csv;charset=utf-8,"
-        + results.map(e => `${e.name},${e.compliance},${e.details}`).join("\n");
+        const folderPath = cells[0].textContent.trim() || currentFolderPath; // Track the current folder path
+        const fileName = cells[1].textContent.trim();
+        const compliance = cells[2].textContent.trim();
+        const details = cells[3].textContent.trim();
 
+        // Update the current folder path only if a new one is found
+        if (folderPath) {
+            currentFolderPath = folderPath;
+        }
+
+        // Add the row to the results array
+        results.push([currentFolderPath, fileName, compliance, details]);
+    });
+
+    // Convert the results array to CSV format
+    const csvContent = "data:text/csv;charset=utf-8,"
+        + results.map(e => e.map(cell => `"${cell}"`).join(",")).join("\n");
+
+    // Create a downloadable link
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
     link.setAttribute("download", "results.csv");
+
+    // Trigger the download
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 }
+
