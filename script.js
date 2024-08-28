@@ -5,7 +5,7 @@ document.getElementById('folder-select-button').addEventListener('click', async 
     }
     const directoryHandle = await window.showDirectoryPicker();
     fileResultsFromFolder = []; // Clear previous results
-    await traverseDirectory(directoryHandle, fileResultsFromFolder, '', 0);
+    await traverseDirectory(directoryHandle, fileResultsFromFolder);
     displayResults(fileResultsFromFolder);
 });
 
@@ -19,28 +19,26 @@ let namingConvention = null;
 let fileNamesFromExcel = [];
 let fileResultsFromFolder = [];  // New variable to store results from folder selection
 
-const MAX_DEPTH = 6; // Maximum depth allowed
-
-async function traverseDirectory(directoryHandle, results, currentPath = '', depth = 0) {
-    if (depth > MAX_DEPTH) {
-        return; // Stop recursion if depth exceeds the maximum
-    }
-
-    for await (const entry of directoryHandle.values()) {
-        const fullPath = currentPath ? `${currentPath}/${entry.name}` : entry.name;
-        if (entry.kind === 'file') {
-            const file = await entry.getFile();
-            results.push({
-                name: file.name,
-                path: currentPath, // Add the path to the results
-                compliance: 'Pending',
-                details: 'Pending'
-            });
-        } else if (entry.kind === 'directory') {
-            await traverseDirectory(entry, results, fullPath, depth + 1); // Recursive call with increased depth
+async function traverseDirectory(directoryHandle, results, currentPath = '') {
+    try {
+        for await (const entry of directoryHandle.values()) {
+            const fullPath = currentPath ? `${currentPath}/${entry.name}` : entry.name;
+            if (entry.kind === 'file') {
+                results.push({
+                    name: entry.name,  // Only the file name
+                    path: currentPath, // Only the folder path
+                    compliance: 'Pending',
+                    details: 'Pending'
+                });
+            } else if (entry.kind === 'directory') {
+                await traverseDirectory(entry, results, fullPath); // Recursive call to traverse sub-directories
+            }
         }
+    } catch (error) {
+        console.error(`Failed to access ${currentPath}:`, error);
     }
 }
+
 
 async function handleFileUpload(event) {
     const file = event.target.files[0];
@@ -163,15 +161,17 @@ function displayResults(results) {
     let compliantCount = 0;
 
     for (const [folder, files] of Object.entries(folderGroups)) {
+        // Insert the folder row with the folder path
         const folderRow = tbody.insertRow();
         folderRow.insertCell(0).textContent = folder;
-        folderRow.insertCell(1).textContent = '';
-        folderRow.insertCell(2).textContent = '';
-        folderRow.insertCell(3).textContent = '';
+        folderRow.insertCell(1).textContent = '';  // Leave file name empty
+        folderRow.insertCell(2).textContent = '';  // Leave compliance status empty
+        folderRow.insertCell(3).textContent = '';  // Leave details empty
 
+        // Insert rows for each file in the folder
         files.forEach(result => {
             const row = tbody.insertRow();
-            row.insertCell(0).textContent = '';
+            row.insertCell(0).textContent = '';  // Folder path already displayed above
             row.insertCell(1).textContent = result.name;
 
             const analysis = analyzeFileName(result.name);
@@ -203,6 +203,7 @@ function displayResults(results) {
     // Update the progress bar
     updateProgressBar(compliancePercentage);
 }
+
 
 
 function groupByFolder(results) {
