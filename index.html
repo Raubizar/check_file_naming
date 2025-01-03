@@ -10,6 +10,7 @@
     <script type="module" src="script.js"></script>
 </head>
 <body>
+      
     <div class="container">
         <a href="https://www.ethoseng.ie/" target="_blank">
             <img src="company-logo.jpg" alt="Ethos Engineering Logo" class="logo">
@@ -40,11 +41,20 @@
             </div>
         </div>
 
+        <!-- Single path display below the buttons -->
+        <p id="selected-path-display" class="path-display"></p>
+
         <div id="excel-options" style="display: none;">
             <label for="sheet-select">Select Sheet:</label>
             <select id="sheet-select"></select>
             <label for="column-select">Select Column for File Names:</label>
             <select id="column-select"></select>
+        </div>
+
+        <div id="processing-popup" class="popup">
+            <div class="popup-content">
+                <p id="loading-animation">Processing may take some time...</p>
+            </div>
         </div>
 
         <div id="summary-box">

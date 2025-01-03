@@ -3,22 +3,75 @@ document.getElementById('folder-select-button').addEventListener('click', async 
         alert("Please upload the Project Naming Convention first.");
         return;
     }
-    const directoryHandle = await window.showDirectoryPicker();
-    fileResultsFromFolder = []; // Clear previous results
-    await traverseDirectory(directoryHandle, fileResultsFromFolder);
-    displayResults(fileResultsFromFolder);
+
+    showProcessingPopup(); // Show the processing popup
+    try {
+        const directoryHandle = await window.showDirectoryPicker();
+        const pathDisplay = document.getElementById('folder-path-display');
+        pathDisplay.textContent = directoryHandle.name; // Display folder name
+        pathDisplay.title = directoryHandle.name; // Set title to full path for tooltip
+
+        fileResultsFromFolder = []; // Clear previous results
+        await traverseDirectory(directoryHandle, fileResultsFromFolder);
+        displayResults(fileResultsFromFolder);
+    } finally {
+        hideProcessingPopup(); // Hide the processing popup when done
+    }
 });
 
 document.getElementById('file-input').addEventListener('change', handleFileUpload);
-document.getElementById('excel-select-button').addEventListener('click', handleExcelSelection);
 
-// Add the event listener for the export button here
+document.getElementById('excel-select-button').addEventListener('click', async () => {
+    showProcessingPopup(); // Show the processing popup
+    try {
+        await handleExcelSelection();
+    } finally {
+        hideProcessingPopup(); // Hide the processing popup when done
+    }
+});
+
+
 document.getElementById('export-button').addEventListener('click', exportResults);
 
 let namingConvention = null;
 let fileNamesFromExcel = [];
 let fileResultsFromFolder = [];  // New variable to store results from folder selection
 
+function showProcessingPopup() {
+    document.getElementById('processing-popup').style.display = 'flex';
+    startLoadingAnimation();
+}
+
+function hideProcessingPopup() {
+    document.getElementById('processing-popup').style.display = 'none';
+    stopLoadingAnimation();
+}
+
+let loadingInterval;
+
+function startLoadingAnimation() {
+    const loadingText = document.getElementById('loading-animation');
+    const symbols = ['|', '/', '-', '\\'];
+    let index = 0;
+
+    loadingInterval = setInterval(() => {
+        loadingText.textContent = `Processing, please wait... ${symbols[index]}`;
+        index = (index + 1) % symbols.length;
+    }, 200); // Change symbol every 200ms
+}
+
+function stopLoadingAnimation() {
+    clearInterval(loadingInterval);
+    document.getElementById('loading-animation').textContent = 'Processing, please wait...';
+}
+
+// Add path display elements under the buttons without affecting the buttons' sizes or positions
+document.getElementById('folder-select-button').insertAdjacentHTML('afterend', '<div id="folder-path-display" class="path-display"></div>');
+document.getElementById('excel-select-button').insertAdjacentHTML('afterend', '<div id="excel-path-display" class="path-display"></div>');
+
+// Other functions remain unchanged...
+
+// Example: Implement traverseDirectory function to ensure it works correctly
 async function traverseDirectory(directoryHandle, results, currentPath = '') {
     try {
         for await (const entry of directoryHandle.values()) {
@@ -72,12 +125,20 @@ async function handleExcelSelection() {
                 accept: { 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'] }
             }]
         });
+        
+        const filePathDisplay = document.getElementById('excel-path-display');
+        const fullPath = fileHandle.name;
+        filePathDisplay.textContent = fullPath; // Display the selected Excel file path
+        filePathDisplay.title = fullPath; // Set title to full path for tooltip on hover
+
         const file = await fileHandle.getFile();
         const data = await file.arrayBuffer();
         const workbook = XLSX.read(data, { type: 'array' });
 
         const sheetSelect = document.getElementById('sheet-select');
         sheetSelect.innerHTML = ''; // Clear any previous options
+
+        // Populate the sheet selection dropdown with sheet names
         workbook.SheetNames.forEach((sheetName, index) => {
             const option = document.createElement('option');
             option.value = index;
@@ -85,11 +146,13 @@ async function handleExcelSelection() {
             sheetSelect.appendChild(option);
         });
 
+        // Display the Excel options section
         document.getElementById('excel-options').style.display = 'block';
 
-        sheetSelect.addEventListener('change', function () {
+        // Add event listener for sheet selection change
+        sheetSelect.onchange = function () {
             populateColumnSelect(workbook.Sheets[workbook.SheetNames[this.value]]);
-        });
+        };
 
         // Load columns for the first sheet by default
         populateColumnSelect(workbook.Sheets[workbook.SheetNames[0]]);
@@ -98,6 +161,7 @@ async function handleExcelSelection() {
         alert('There was an issue selecting or reading the Excel file. Please try again.');
     }
 }
+
 
 function populateColumnSelect(sheet) {
     const columnSelect = document.getElementById('column-select');
@@ -136,6 +200,44 @@ function loadFileNamesFromExcel(sheet, columnIndex) {
         console.error('Error loading file names from Excel:', error);
         alert('There was an issue loading file names from the selected Excel column. Please try again.');
     }
+}
+
+function updateSummary(totalFiles, compliantCount) {
+    const totalFilesElement = document.getElementById('total-files');
+    const namesComplyElement = document.getElementById('names-comply');
+    const compliancePercentageElement = document.getElementById('compliance-percentage');
+    
+    // Animate Total Files Verified
+    animateCountUp(totalFilesElement, totalFiles, 1000); // 1 second duration
+    
+    // Animate Names Comply
+    animateCountUp(namesComplyElement, compliantCount, 1000); // 1 second duration
+    
+    // Calculate and update compliance percentage
+    const compliancePercentage = totalFiles === 0 ? 0 : ((compliantCount / totalFiles) * 100).toFixed(2);
+    compliancePercentageElement.textContent = `${compliancePercentage}%`;
+    
+    // Update progress bar
+    updateProgressBar(compliancePercentage);
+}
+
+function animateCountUp(element, end, duration) {
+    const start = parseInt(element.textContent) || 0;
+    const range = end - start;
+    const startTime = performance.now();
+    
+    function update(currentTime) {
+        const elapsedTime = currentTime - startTime;
+        const progress = Math.min(elapsedTime / duration, 1);
+        const value = Math.floor(progress * range + start);
+        element.textContent = value;
+        
+        if (progress < 1) {
+            requestAnimationFrame(update);
+        }
+    }
+    
+    requestAnimationFrame(update);
 }
 
 function displayResults(results) {
@@ -184,27 +286,22 @@ function displayResults(results) {
             if (analysis.compliance === 'Wrong') {
                 complianceCell.style.color = 'red';
                 row.cells[1].style.color = 'red';
-            }
-
-            if (analysis.compliance === 'Ok') {
+            } else {
                 compliantCount++;
             }
 
             totalFiles++;
+
+            // Update the summary in real-time with visible animation
+            animateCountUp(document.getElementById('total-files'), totalFiles, 500);
+            animateCountUp(document.getElementById('names-comply'), compliantCount, 500);
+
+            const compliancePercentage = ((compliantCount / totalFiles) * 100).toFixed(2);
+            document.getElementById('compliance-percentage').textContent = `${compliancePercentage}%`;
+            updateProgressBar(compliancePercentage);
         });
     }
-
-    // Calculate and update the summary
-    const compliancePercentage = ((compliantCount / totalFiles) * 100).toFixed(2);
-    document.getElementById('total-files').textContent = totalFiles;
-    document.getElementById('names-comply').textContent = compliantCount;
-    document.getElementById('compliance-percentage').textContent = `${compliancePercentage}%`;
-
-    // Update the progress bar
-    updateProgressBar(compliancePercentage);
 }
-
-
 
 function groupByFolder(results) {
     const folderGroups = {};
